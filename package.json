@@ -99,7 +99,6 @@
   "devDependencies": {
     "@build-tracker/cli": "^1.0.0-beta.15",
     "@esbuild-kit/esm-loader": "^2.1.1",
-    "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
     "@jest/fake-timers": "^28.1.0",
     "@testing-library/preact": "^3.1.1",
     "@testing-library/preact-hooks": "^1.1.0",
@@ -187,6 +186,7 @@
     "csp_evaluator": "1.1.1",
     "devtools-protocol": "0.0.1155343",
     "enquirer": "^2.3.6",
+    "esbuild-plugins-node-modules-polyfill": "^1.5.0",
     "http-link-header": "^1.1.1",
     "intl-messageformat": "^4.4.0",
     "jpeg-js": "^0.4.4",

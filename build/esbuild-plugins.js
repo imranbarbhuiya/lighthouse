@@ -10,6 +10,8 @@ import {createRequire} from 'module';
 
 // eslint-disable-next-line no-unused-vars
 import esbuild from 'esbuild';
+// eslint-disable-next-line no-unused-vars
+import {nodeModulesPolyfillPlugin} from 'esbuild-plugins-node-modules-polyfill';
 import builtin from 'builtin-modules';
 
 import {inlineFsPlugin} from './plugins/esbuild-inline-fs.js';
