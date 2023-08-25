@@ -2,7 +2,7 @@ name: package-test
 
 on:
   push:
-    branches: [main]
+    branches: [main, patch-1]
   pull_request: # run on all PRs, not just PRs to a particular branch
 
 env:

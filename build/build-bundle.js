@@ -11,8 +11,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import {execSync} from 'child_process';
-import {createRequire} from 'module';
+import {createRequire, builtinModules} from 'module';
 
 import esMain from 'es-main';
 import esbuild from 'esbuild';
@@ -35,7 +34,7 @@ const require = createRequire(import.meta.url);
  * Note: can't do this in CI because it is a shallow checkout.
  */
 const GIT_READABLE_REF =
-  execSync(process.env.CI ? 'git rev-parse HEAD' : 'git describe').toString().trim();
+  `execSync(process.env.CI ? 'git rev-parse HEAD' : 'git describe')`.toString().trim();
 
 // HACK: manually include the lighthouse-plugin-publisher-ads audits.
 /** @type {Array<string>} */
@@ -107,8 +106,8 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
   const shimsObj = {
     // zlib's decompression code is very large and we don't need it.
     // We export empty functions, instead of an empty module, simply to silence warnings
-    // about no exports.
-    '__zlib-lib/inflate': `
+    // about no exports.`
+    'pako/lib/inflate': `
       export function inflateInit2() {};
       export function inflate() {};
       export function inflateEnd() {};
