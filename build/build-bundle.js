@@ -103,21 +103,16 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
   }).join(',\n');
 
   /** @type {Record<string, string>} */
-  const shimsObj = {
-    // zlib's decompression code is very large and we don't need it.
-    // We export empty functions, instead of an empty module, simply to silence warnings
-    // about no exports.`
-    'pako/lib/inflate': `
-      export function inflateInit2() {};
-      export function inflate() {};
-      export function inflateEnd() {};
-      export function inflateReset() {};
-    `,
-  };
+  const shimsObj = {};
 
   const modulesToIgnore = [
     'puppeteer-core',
     'pako/lib/zlib/inflate.js',
+    'pako/lib/zlib/inflate',
+    'pako/lib/inflate',
+    'pako/lib/inflate.js',
+    'pako/lib/zlib/inffast',
+    'pako/lib/zlib/inffast.js',
     '@sentry/node',
     'source-map',
     'ws',
