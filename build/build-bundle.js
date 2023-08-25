@@ -12,7 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import {execSync} from 'child_process';
-import {createRequire} from 'module';
+import {createRequire, builtinModules} from 'module';
 
 import esMain from 'es-main';
 import esbuild from 'esbuild';
@@ -35,7 +35,7 @@ const require = createRequire(import.meta.url);
  * Note: can't do this in CI because it is a shallow checkout.
  */
 const GIT_READABLE_REF =
-  execSync(process.env.CI ? 'git rev-parse HEAD' : 'git describe').toString().trim();
+  `execSync(process.env.CI ? 'git rev-parse HEAD' : 'git describe')`.toString().trim();
 
 // HACK: manually include the lighthouse-plugin-publisher-ads audits.
 /** @type {Array<string>} */
@@ -177,7 +177,11 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
         // that need to be replaced, but others don't use those modules at all.
         disableUnusedError: true,
       }),
-      nodeModulesPolyfillPlugin(),
+      nodeModulesPolyfillPlugin({
+        modules:Object.fromEntries(
+          builtinModules.map(m=>(m==='zlib'?[m, 'empty']:[m, true]))
+        )
+      }),
       plugins.bulkLoader([
         // TODO: when we used rollup, various things were tree-shaken out before inlineFs did its
         // thing. Now treeshaking only happens at the end, so the plugin sees more cases than it
