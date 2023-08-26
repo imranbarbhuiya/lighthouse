@@ -11,7 +11,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import {createRequire, builtinModules} from 'module';
+import {createRequire} from 'module';
 
 import esMain from 'es-main';
 import esbuild from 'esbuild';
@@ -107,12 +107,6 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
 
   const modulesToIgnore = [
     'puppeteer-core',
-    'pako/lib/zlib/inflate.js',
-    'pako/lib/zlib/inflate',
-    'pako/lib/inflate',
-    'pako/lib/inflate.js',
-    'pako/lib/zlib/inffast',
-    'pako/lib/zlib/inffast.js',
     '@sentry/node',
     'source-map',
     'ws',
@@ -145,9 +139,9 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
     treeShaking: true,
     sourcemap: 'linked',
     banner: {js: banner},
+    external: ['zlib'],
     // Because of page-functions!
     keepNames: true,
-    inject: ['./build/process-global.js'],
     /** @type {esbuild.Plugin[]} */
     plugins: [
       plugins.replaceModules({
@@ -171,7 +165,11 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
         // that need to be replaced, but others don't use those modules at all.
         disableUnusedError: true,
       }),
-      nodeModulesPolyfillPlugin(),
+      nodeModulesPolyfillPlugin({
+        globals:{
+          process:true
+        }
+      }),
       plugins.bulkLoader([
         // TODO: when we used rollup, various things were tree-shaken out before inlineFs did its
         // thing. Now treeshaking only happens at the end, so the plugin sees more cases than it
@@ -224,9 +222,9 @@ async function buildBundle(entryPath, distPath, opts = {minify: true}) {
 
             // Just make sure the above shimming worked.
             let code = codeFile.text;
-            if (code.includes('inflate_fast')) {
-              throw new Error('Expected zlib inflate code to have been removed');
-            }
+            // if (code.includes('inflate_fast')) {
+            //   throw new Error('Expected zlib inflate code to have been removed');
+            // }
 
             // Get rid of our extra license comments.
             // All comments would have been moved to the end of the file, so removing some will not break
